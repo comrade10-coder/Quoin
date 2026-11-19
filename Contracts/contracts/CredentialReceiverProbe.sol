@@ -26,11 +26,13 @@ contract CredentialReceiverProbe is IERC721Receiver {
     }
 
     function onERC721Received(
-        address,
-        address,
+        address operator,
+        address from,
         uint256 tokenId,
-        bytes calldata
+        bytes caldata
     ) external override returns (bytes4) {
+        // Only the configured credential contract may deliver tokens to this probe.
+        require(msg.sender == address(credential), "probe: unauthorized sender");
         // Reject malformed ids before reading state from the credential.
         require(tokenId != 0, "probe: invalid tokenId");
 
